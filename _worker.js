@@ -564,7 +564,7 @@ export default {
         ]
       ];
 
-      const adminMessage = '管理员面板：请选择操作';
+      const adminMessage = '🎮 *管理员控制面板*\n\n请选择以下操作进行用户管理';
       await Promise.all([
         fetchWithRetry(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: 'POST',
@@ -573,6 +573,7 @@ export default {
             chat_id: chatId,
             message_thread_id: topicId,
             text: adminMessage,
+            parse_mode: 'Markdown',
             reply_markup: { inline_keyboard: buttons }
           })
         }),
