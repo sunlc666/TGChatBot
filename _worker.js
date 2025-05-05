@@ -546,6 +546,9 @@ export default {
 
       const buttons = [
         [
+          { text: '👤 查看用户', url: `tg://user?id=${privateChatId}` }
+        ],
+        [
           { text: '🔒 关入小黑屋', callback_data: `block_${privateChatId}` },
           { text: '🔑 放出小黑屋', callback_data: `unblock_${privateChatId}` }
         ],
@@ -1218,7 +1221,7 @@ export default {
     }
 
     async function sendMessageToUser(chatId, text) {
-      const requestBody = { chat_id: chatId, text: text };
+      const requestBody = { chat_id: chatId, text: text, parse_mode: 'MarkdownV2' };
       const response = await fetchWithRetry(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
