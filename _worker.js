@@ -315,7 +315,11 @@ export default {
       }
 
       if (userState.is_blocked) {
-        await sendMessageToUser(chatId, "您已被拉黑，无法发送消息。请联系管理员解除拉黑。");
+        await sendMessageToUser(chatId, `⛔️ *消息已被拒收*\n\n` +
+          `很抱歉 由于您的不当行为\n` +
+          `凉心已将您关入小黑屋\n` +
+          `暂时无法继续对话\n\n` +
+          `TAT`);
         return;
       }
 
@@ -412,7 +416,10 @@ export default {
         }
 
         const successMessage = await getVerificationSuccessMessage();
-        await sendMessageToUser(chatId, `${successMessage}\n你好，欢迎使用私聊机器人，现在发送信息吧！`);
+        await sendMessageToUser(chatId, `👋 *欢迎使用凉心的传话筒*\n\n` +
+              `📝 请使用礼貌用语进行对话\n` +
+              `⏱ 管理员看到消息会及时回复\n\n` +
+              `*温馨提示：请保持耐心，避免重复发送相同消息*`);
         const userInfo = await getUserInfo(chatId);
         await ensureUserTopic(chatId, userInfo);
         return;
