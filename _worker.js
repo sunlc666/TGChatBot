@@ -395,11 +395,11 @@ export default {
               }
               return;
             } else {
-              await sendMessageToUser(chatId, `请完成验证后发送消息"${text || '您的具体信息'}"。`);
+              await sendMessageToUser(chatId, `⚠️ 请先完成验证后再发送消息！`);
             }
             return;
           }
-          await sendMessageToUser(chatId, `请完成验证后发送消息"${text || '您的具体信息'}"。`);
+          await sendMessageToUser(chatId, `⚠️ 请先完成验证后再发送消息！`);
           await handleVerification(chatId, messageId);
           return;
         }
@@ -823,7 +823,7 @@ export default {
             .run();
 
           const successMessage = await getVerificationSuccessMessage();
-          await sendMessageToUser(chatId, `${successMessage}\n你好，欢迎使用私聊机器人！现在可以发送消息了。`);
+          await sendMessageToUser(chatId, `${successMessage}\n恭喜您通过了验证！现在可以和凉心聊天啦～`);
           const userInfo = await getUserInfo(chatId);
           await ensureUserTopic(chatId, userInfo);
         } else {
@@ -860,7 +860,7 @@ export default {
           await env.D1.prepare('INSERT OR REPLACE INTO user_states (chat_id, is_blocked) VALUES (?, ?)')
             .bind(privateChatId, true)
             .run();
-          await sendMessageToTopic(topicId, `用户 ${privateChatId} 已被拉黑，消息将不再转发。`);
+          await sendMessageToTopic(topicId, `✅ *操作成功*\n\`${privateChatId}\` 已被凉心关入小黑屋\n消息将不再转发`);
         } else if (action === 'unblock') {
           let state = userStateCache.get(privateChatId);
           if (state === undefined) {
@@ -874,12 +874,12 @@ export default {
           await env.D1.prepare('INSERT OR REPLACE INTO user_states (chat_id, is_blocked, is_first_verification) VALUES (?, ?, ?)')
             .bind(privateChatId, false, true)
             .run();
-          await sendMessageToTopic(topicId, `用户 ${privateChatId} 已解除拉黑，消息将继续转发。`);
+          await sendMessageToTopic(topicId, `✅ *操作成功*\n凉心把 \`${privateChatId}\` 从小黑屋中放了出来\n消息将继续转发`);
         } else if (action === 'toggle_verification') {
           const currentState = (await getSetting('verification_enabled', env.D1)) === 'true';
           const newState = !currentState;
           await setSetting('verification_enabled', newState.toString());
-          await sendMessageToTopic(topicId, `验证码功能已${newState ? '开启' : '关闭'}。`);
+          await sendMessageToTopic(topicId, `✅ *操作成功*\n验证码功能已${newState ? '开启' : '关闭'}。`);
         } else if (action === 'check_blocklist') {
           const blockedUsers = await env.D1.prepare('SELECT chat_id FROM user_states WHERE is_blocked = ?')
             .bind(true)
@@ -887,12 +887,12 @@ export default {
           const blockList = blockedUsers.results.length > 0 
             ? blockedUsers.results.map(row => row.chat_id).join('\n')
             : '当前没有被拉黑的用户。';
-          await sendMessageToTopic(topicId, `黑名单列表：\n${blockList}`);
+          await sendMessageToTopic(topicId, `🚫 *黑名单用户*\n\n${blockList}`);
         } else if (action === 'toggle_user_raw') {
           const currentState = (await getSetting('user_raw_enabled', env.D1)) === 'true';
           const newState = !currentState;
           await setSetting('user_raw_enabled', newState.toString());
-          await sendMessageToTopic(topicId, `用户端 Raw 链接已${newState ? '开启' : '关闭'}。`);
+          await sendMessageToTopic(topicId, `✅ *操作成功*\n用户端欢迎信息已${newState ? '开启' : '关闭'}`);
         } else if (action === 'delete_user') {
           userStateCache.set(privateChatId, undefined);
           messageRateCache.set(privateChatId, undefined);
@@ -902,7 +902,7 @@ export default {
             env.D1.prepare('DELETE FROM message_rates WHERE chat_id = ?').bind(privateChatId),
             env.D1.prepare('DELETE FROM chat_topic_mappings WHERE chat_id = ?').bind(privateChatId)
           ]);
-          await sendMessageToTopic(topicId, `用户 ${privateChatId} 的状态、消息记录和话题映射已删除，用户需重新发起会话。`);
+          await sendMessageToTopic(topicId, `✅ *操作成功*\n已更改 \`${privateChatId}\` 状态\n消息记录和话题映射已删除\n用户需重新发起会话`);
         } else {
           await sendMessageToTopic(topicId, `未知操作：${action}`);
         }
