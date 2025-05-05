@@ -1152,7 +1152,8 @@ export default {
       const requestBody = {
         chat_id: GROUP_ID,
         text: text,
-        message_thread_id: topicId
+        message_thread_id: topicId,
+        parse_mode: 'Markdown'
       };
       const response = await fetchWithRetry(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
