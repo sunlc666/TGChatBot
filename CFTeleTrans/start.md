@@ -9,9 +9,9 @@
 
 快捷指令：@WWWengShare
 
-限免降价：@Apps_Share
+限免降价：@Apps\_Share
 
-应用交流：@Appshare_Group
+应用交流：@Appshare\_Group
 
 ⚡️ *注意事项*
 • 避免重复发送相同的消息
